@@ -7,7 +7,7 @@ export const LockSchema = z.object({
   time: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid time format"),
   duration: z.union([z.literal(30), z.literal(60)]),
   playerCount: z.number().int().min(1).max(6),
-  sessionId: z.string().alphanumeric().max(64)
+  sessionId: z.string().regex(/^[a-zA-Z0-9-_]+$/).max(64)
 }).refine(data => {
   if (data.game === GameType.GEL_BLASTERS && data.duration === 60) {
     return false;
@@ -24,7 +24,7 @@ export const ReservationSchema = z.object({
   clientPhone: z.string().regex(/^(?:\+20|0)?1[0125]\d{8}$/, "Invalid Egyptian phone number"),
   clientEmail: z.string().email().toLowerCase().max(254),
   policyAccepted: z.literal(true),
-  sessionId: z.string().alphanumeric().max(64),
+  sessionId: z.string().regex(/^[a-zA-Z0-9-_]+$/).max(64),
   captchaToken: z.string().min(1)
 });
 
