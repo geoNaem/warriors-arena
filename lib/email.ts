@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function sendClientConfirmation(reservation: any) {
+export async function sendClientConfirmation(reservation: { clientEmail: string, game: string, reservationCode: string, sessionDate: any, sessionTime: string, playerCount: number }) {
   const isLaserTag = reservation.game === 'LASER_TAG' || reservation.game === 'laser-tag';
   const gameNameEN = isLaserTag ? "Laser Tag" : "Gel Blasters";
   const gameNameAR = isLaserTag ? "ليزر تاج" : "جل بلاسترز";
@@ -52,7 +52,7 @@ export async function sendClientConfirmation(reservation: any) {
   }
 }
 
-export async function sendOwnerNotification(reservation: any) {
+export async function sendOwnerNotification(reservation: Reservation) {
   try {
     await resend.emails.send({
       from: 'System <status@warriors-arena.com>',
