@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Reservation {
+  id              String            @id @default(cuid())
+  reservationCode String            @unique
+  game            GameType
+  duration        Int
+  sessionDate     DateTime
+  sessionTime     String
+  playerCount     Int
+  clientName      String
+  clientPhone     String
+  clientEmail     String
+  status          ReservationStatus @default(PENDING)
+  cancelToken     String            @unique @default(cuid())
+  cancelTokenUsed Boolean           @default(false)
+  policyAccepted  Boolean           @default(false)
+  ipAddress       String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  checkedInAt     DateTime?
+
+  @@index([game, sessionDate, sessionTime])
+}
+
+enum GameType {
+  LASER_TAG
+  GEL_BLASTERS
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  EXPIRED
+}
+
+model SlotLock {
+  id          String   @id @default(cuid())
+  game        GameType
+  sessionDate DateTime
+  sessionTime String
+  duration    Int
+  playerCount Int      @default(1)
+  lockedUntil DateTime
+  sessionId   String
+  createdAt   DateTime @default(now())
+
+  @@index([game, sessionDate, sessionTime])
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(STAFF)
+  name         String
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+enum AdminRole {
+  OWNER
+  STAFF
+}
